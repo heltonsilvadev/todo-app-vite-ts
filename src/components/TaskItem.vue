@@ -48,7 +48,7 @@ const saveEdit = () => {
 
 const cancelEdit = () => {
   isEditing.value = false;
-  // Revert to original text
+  //
   emit('save', { ...props.task, text: originalText.value });
 };
 </script>
