@@ -43,11 +43,13 @@ const saveEdit = () => {
   }
 
   isEditing.value = false;
-  emit('save', { ...props.task, text: newText || props.task.text });
+  emit('save', { ...props.task, text: newText });
 };
 
 const cancelEdit = () => {
   isEditing.value = false;
+  // Revert to original text
+  emit('save', { ...props.task, text: originalText.value });
 };
 </script>
 
