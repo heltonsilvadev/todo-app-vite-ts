@@ -34,8 +34,7 @@ onMounted(() => {
 
 <template>
   <div class="todo-list">
-    <h1>Lista de Tarefas</h1>
-    
+
     <div class="add-task">
       <input 
         v-model="newTask"
@@ -57,3 +56,31 @@ onMounted(() => {
     </ul>
   </div>
 </template>
+
+<style scoped>
+.todo-list {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.add-task {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+input {
+  flex: 1;
+  padding: 8px;
+}
+
+button {
+  padding: 8px 16px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+</style>

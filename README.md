@@ -1,91 +1,119 @@
-# Vue.js 3 Todo App - Modular Structure
+# Todo App - Vue.js 3 + TypeScript + Vite
 
-This is a Vue.js 3 todo application restructured to be as close as possible to SFC (Single File Component) structure while using CDN and the Composition API with `setup()` function.
+Esta é uma aplicação de lista de tarefas desenvolvida com Vue.js 3, TypeScript e Vite para o frontend, e Hono com Cloudflare Workers para o backend.
 
-## Project Structure
+## Funcionalidades
 
+- ✅ Adicionar novas tarefas
+- ✅ Editar tarefas existentes (double-click)
+- ✅ Marcar tarefas como concluídas
+- ✅ Deletar tarefas
+- ✅ Persistência de dados com Cloudflare KV
+- ✅ Interface responsiva e moderna
+
+## Estrutura do Projeto
+
+### Frontend
 ```
-vuecdn1/
-├── index.html              # Main HTML file with templates
-├── main.ts                 # Entry point - loads and mounts the app
-├── types.ts
+src/
+├── App.vue              # Componente raiz
+├── main.ts              # Ponto de entrada
+├── types.ts             # Definições de tipos
+├── router/
+│   └── index.ts         # Configuração de rotas
+├── pages/
+│   └── MainPage.vue     # Página principal
 ├── components/
-│   ├── TaskItem.vue      # TaskItem component
-└── README.md              # This file
+│   ├── TodoList.vue     # Lista de tarefas
+│   └── TaskItem.vue     # Item individual de tarefa
+└── services/
+    └── todoService.ts   # Serviço para comunicação com API
 ```
 
-## File Descriptions
+### Backend
+```
+my-todo-app-backend/
+└── src/
+    └── server.ts        # API Hono com endpoints CRUD
+```
 
-### `index.html`
-- Main HTML file that loads Vue.js from CDN
-- Contains HTML templates using `<template>` elements with IDs
-- Links to the external CSS file
-- Contains the mounting point `<div id="app"></div>`
-- Loads the main.js entry point
+## Tecnologias Utilizadas
 
-### `main.js`
-- Entry point of the application
-- Dynamically loads the App component and template
-- Creates and mounts the Vue application
+### Frontend
+- **Vue.js 3** com Composition API
+- **TypeScript** para tipagem
+- **Vite** para build e dev server
+- **Vue Router** para navegação
+- **Cloudflare Pages** para hospedagem (opcional)
 
+### Backend
+- **Hono** framework para Cloudflare Workers
+- **Cloudflare KV** para armazenamento
+- **Cloudflare Workers** para API serverless
 
+## Como Executar Localmente
 
-### `components/App.css`
-- Contains global styles and App-specific styles (equivalent to `<style>` in SFC)
-- Includes CSS variables for theming (light/dark mode)
-- App container, header, input area, and clock styles
+### Pré-requisitos
+- Node.js (versão 18 ou superior)
+- PNPM ou NPM
 
-### `components/App.js`
-- Contains the Vue component logic using Composition API
-- Uses `setup()` function (not `<script setup>`)
-- Exports the component as default export
-- All reactive data, computed properties, and methods are defined here
+### Instalar Dependências
+```bash
+# Frontend
+pnpm install
 
-### `components/TaskItem.css`
-- Contains TaskItem-specific styles (equivalent to `<style>` in SFC)
-- Task item layout, checkbox, buttons, and edit input styles
+# Backend
+cd ../my-todo-app-backend
+pnpm install
+```
 
-### `components/TaskItem.js`
-- Reusable TaskItem component that handles individual task functionality
-- Shows the extensibility of this structure
-- Demonstrates props, emits, and component communication
-- Uses template from HTML by ID
-- Handles task editing, completion, and deletion
+### Executar Modo Desenvolvimento
+```bash
+# Frontend (porta 5173-5176)
+pnpm run dev
 
-## Features
+# Backend (porta 8787)
+cd ../my-todo-app-backend
+npx wrangler dev --local
+```
 
-- ✅ Add, edit, and delete tasks
-- ✅ Mark tasks as completed
-- ✅ Dark/Light theme toggle
-- ✅ Local storage persistence
-- ✅ Real-time clock display
-- ✅ Responsive design
-- ✅ Accessibility features
-- ✅ Modern UI with smooth transitions
+A aplicação frontend estará disponível em `http://localhost:5173/`
 
-## How to Run
+## Como Fazer Deploy
 
-1. Clone or download the project
-2. Open `index.html` in a web browser
-3. The application will load automatically
+### Backend (Cloudflare Workers)
+```bash
+cd ../my-todo-app-backend
+npx wrangler deploy
+```
 
-## Technical Details
+### Frontend (Cloudflare Pages)
+```bash
+# Buildar para produção
+pnpm run build
 
-- **Vue.js 3**: Using CDN version
-- **Composition API**: Using `setup()` function (not `<script setup>`)
-- **CSS Variables**: For theme switching
-- **Local Storage**: For data persistence
-- **ES6 Modules**: For component loading
-- **No Build Tools**: Pure HTML/CSS/JS structure
-- **HTML Templates**: Templates are HTML `<template>` elements with IDs
+# Deploy (assumindo que tem Cloudflare Pages configurado)
+npx wrangler pages deploy dist
+```
 
-## Structure Benefits
+Ou via dashboard do Cloudflare Pages conectando o repositório GitHub.
 
-This modular structure provides several benefits:
+## API Endpoints
 
-1. **Separation of Concerns**: Template, styles, and logic are in separate files
-2. **Maintainability**: Easier to find and modify specific parts
-3. **Reusability**: Components can be easily reused
-4. **SFC-like Experience**: Similar to working with Single File Components
-5. **No Build Tools**: Can run directly in the browser
-6. **CDN Compatible**: Works with Vue.js loaded from CDN
+- `GET /api/todos` - Listar todas as tarefas
+- `POST /api/todos` - Criar nova tarefa (`{ "task": "Descrição" }`)
+- `PUT /api/todos/:id` - Atualizar tarefa (`{ "task": "...", "completed": true/false }`)
+- `DELETE /api/todos/:id` - Deletar tarefa
+
+## Melhorias Possíveis
+
+- Adicionar autenticação
+- Categorias/Labels para tarefas
+- Ordenação por data/prioridade
+- Tema escuro/claro
+- Sincronização em tempo real
+- Notificações push
+
+## Contribuição
+
+Para contribuir, faça um fork do projeto e crie uma branch com suas modificações.

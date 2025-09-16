@@ -1,8 +1,4 @@
-interface Task {
-  id: number;
-  task: string;
-  completed: boolean;
-}
+import type { Task } from '../types'
 
 interface ApiResponse<T> {
   success: boolean;
@@ -10,10 +6,17 @@ interface ApiResponse<T> {
   error?: string;
 }
 
+const checkResponse = <T>(data: ApiResponse<T>) => {
+  if (!data.success) {
+    throw new Error(data.error || 'Erro na API')
+  }
+}
+
 export const todoService = {
   async getTasks(): Promise<Task[]> {
     const response = await fetch('/api/todos')
     const data: ApiResponse<Task[]> = await response.json()
+    checkResponse(data)
     return data.data
   },
 
@@ -24,6 +27,7 @@ export const todoService = {
       body: JSON.stringify({ task })
     })
     const data: ApiResponse<Task> = await response.json()
+    checkResponse(data)
     return data.data
   },
 
@@ -34,10 +38,13 @@ export const todoService = {
       body: JSON.stringify(updates)
     })
     const data: ApiResponse<Task> = await response.json()
+    checkResponse(data)
     return data.data
   },
 
   async deleteTask(id: number): Promise<void> {
-    await fetch(`/api/todos/${id}`, { method: 'DELETE' })
+    const response = await fetch(`/api/todos/${id}`, { method: 'DELETE' })
+    const data: ApiResponse<Task> = await response.json()
+    checkResponse(data)
   }
 }

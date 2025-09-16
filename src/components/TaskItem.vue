@@ -68,13 +68,12 @@ const cancelEdit = () => {
 </script>
 
 <template>
-  <!-- display flex makes the buttons side by side -->
-  <li style="display: flex; gap: 10px; align-items: center">
+  <li class="task-item">
     <input
       type="checkbox"
       :checked="task.completed"
       @change="toggleComplete"
-      style="margin-right: 10px"
+      class="checkbox"
     />
 
     <input
@@ -85,20 +84,66 @@ const cancelEdit = () => {
       @keyup.enter="saveEdit"
       @keyup.esc="cancelEdit"
       @blur="saveEdit"
-      :style="{ textDecoration: task.completed ? 'line-through' : 'none' }"
+      :class="{ completed: task.completed }"
     />
     <span
       v-else
       @dblclick="editTask"
-      :style="{ textDecoration: task.completed ? 'line-through' : 'none', cursor: task.completed ? 'default' : 'pointer' }"
+      :class="{ completed: task.completed, editable: !task.completed }"
     >
       {{ task.task }}
     </span>
 
-    <div style="display: flex; margin-left: auto">
+    <div class="actions">
       <button v-if="isEditing" @click="saveEdit">Save</button>
       <button v-else-if="!task.completed" @click="editTask">Edit</button>
-      <button @click="deleteTask" style="margin-left: 5px">Delete</button>
+      <button @click="deleteTask" class="delete">Delete</button>
     </div>
   </li>
 </template>
+
+<style scoped>
+.task-item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.checkbox {
+  margin-right: 10px;
+}
+
+.completed {
+  text-decoration: line-through;
+}
+
+.editable {
+  cursor: pointer;
+}
+
+input[type="text"],
+span {
+  flex: 1;
+}
+
+.actions {
+  display: flex;
+  margin-left: auto;
+}
+
+button {
+  padding: 5px 10px;
+  margin-left: 5px;
+}
+
+.delete {
+  background: #f44336;
+  color: white;
+  border: none;
+}
+
+.delete:hover {
+  background: #d32f2f;
+}
+</style>
