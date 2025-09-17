@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, useTemplateRef } from "vue";
+import { ref, useTemplateRef, nextTick } from "vue";
 import { todoService } from "../services/todoService";
 import type { Task } from "../types";
 
@@ -20,10 +20,11 @@ const editInput = useTemplateRef("editInput");
 
 const toggleComplete = async () => {
   try {
-    await todoService.updateTask(props.task.id, {
-      completed: !props.task.completed
+    const updatedTask = await todoService.updateTask(props.task.id, {
+      completed: !props.task.completed,
     });
-    emit("toggle-complete", props.task);
+    Object.assign(props.task, updatedTask);
+    emit("toggle-complete", updatedTask);
   } catch (error) {
     console.error('Erro ao atualizar tarefa:', error);
   }
@@ -42,6 +43,10 @@ const editTask = () => {
   if (props.task.completed) return;
   originalText.value = props.task.task;
   isEditing.value = true;
+  // Focus the input on next tick when DOM is updated
+  nextTick(() => {
+    editInput.value?.focus();
+  });
 };
 
 const saveEdit = async () => {
@@ -53,9 +58,10 @@ const saveEdit = async () => {
   }
 
   try {
-    await todoService.updateTask(props.task.id, { task: newText });
+    const updatedTask = await todoService.updateTask(props.task.id, { task: newText });
     isEditing.value = false;
-    emit("save", { ...props.task, task: newText });
+    Object.assign(props.task, updatedTask);
+    emit("save", updatedTask);
   } catch (error) {
     console.error('Erro ao salvar tarefa:', error);
   }
@@ -105,45 +111,82 @@ const cancelEdit = () => {
 <style scoped>
 .task-item {
   display: flex;
-  gap: 10px;
+  gap: 15px;
   align-items: center;
-  margin-bottom: 10px;
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  background: #fff;
+  transition: all 0.2s ease;
+}
+
+.task-item:hover {
+  border-color: #ddd;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .checkbox {
-  margin-right: 10px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
 }
 
 .completed {
   text-decoration: line-through;
+  color: #888;
 }
 
 .editable {
   cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.editable:hover {
+  color: #667eea;
 }
 
 input[type="text"],
 span {
   flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: inherit;
+}
+
+input[type="text"]:focus {
+  background: #f8f9ff;
+  padding: 4px 8px;
+  border-radius: 4px;
 }
 
 .actions {
   display: flex;
+  gap: 5px;
   margin-left: auto;
 }
 
 button {
-  padding: 5px 10px;
-  margin-left: 5px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
 }
 
 .delete {
-  background: #f44336;
-  color: white;
-  border: none;
+  background: #fee;
+  color: #d32f2f;
 }
 
 .delete:hover {
-  background: #d32f2f;
+  background: #fdd;
 }
 </style>

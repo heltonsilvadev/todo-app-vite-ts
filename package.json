@@ -5,11 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:full": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:client": "vite",
+    "dev:server": "node server.js",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
     "deploy": "vue-tsc -b && vite build && wrangler pages deploy dist --project-name heltondev-frontend"
   },
   "dependencies": {
+    "concurrently": "^9.2.1",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
     "vue": "^3.5.18",
     "vue-router": "4"
   },
