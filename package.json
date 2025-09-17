@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "vue-tsc -b && vite build && wrangler pages deploy dist --project-name heltondev-frontend"
   },
   "dependencies": {
     "vue": "^3.5.18",
