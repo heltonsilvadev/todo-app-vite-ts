@@ -1,6 +1,4 @@
-<script setup lang="ts">
-import TodoList from "./components/TodoList.vue";
-</script>
+
 
 <template>
   <div class="app">
@@ -10,7 +8,7 @@ import TodoList from "./components/TodoList.vue";
     </header>
 
     <main>
-      <TodoList />
+      <router-view />
     </main>
   </div>
 </template>
