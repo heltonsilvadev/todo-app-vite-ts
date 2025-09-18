@@ -19,10 +19,6 @@ src/
 ├── App.vue              # Componente raiz
 ├── main.ts              # Ponto de entrada
 ├── types.ts             # Definições de tipos
-├── router/
-│   └── index.ts         # Configuração de rotas
-├── pages/
-│   └── MainPage.vue     # Página principal
 ├── components/
 │   ├── TodoList.vue     # Lista de tarefas
 │   └── TaskItem.vue     # Item individual de tarefa
