@@ -21,18 +21,14 @@ const editInput = useTemplateRef("editInput");
 const toggleComplete = async () => {
   if (isLoading.value) return;
 
-  const originalCompleted = props.task.completed;
   try {
     isLoading.value = true;
     const updatedTask = await todoService.updateTask(props.task.id, {
       completed: !props.task.completed,
     });
-    Object.assign(props.task, updatedTask);
     emit("toggle-complete", updatedTask);
   } catch (error) {
     console.error('Erro ao atualizar tarefa:', error);
-    // Reset to original state on error
-    props.task.completed = originalCompleted;
   } finally {
     isLoading.value = false;
   }
@@ -74,7 +70,6 @@ const saveEdit = async () => {
     isLoading.value = true;
     const updatedTask = await todoService.updateTask(props.task.id, { task: newText });
     isEditing.value = false;
-    Object.assign(props.task, updatedTask);
     emit("save", updatedTask);
   } catch (error) {
     console.error('Erro ao salvar tarefa:', error);

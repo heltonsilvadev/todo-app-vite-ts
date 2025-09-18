@@ -63,13 +63,11 @@ export const todoService = {
 
   async deleteTask(id: string): Promise<void> {
     const response = await fetch(`${API_BASE}/todos/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      method: 'DELETE'
     })
 
-    const data: ApiResponse<Task> = await response.json()
-    checkResponse(response, data)
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    }
   }
 }

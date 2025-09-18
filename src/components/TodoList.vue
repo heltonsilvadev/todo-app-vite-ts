@@ -8,7 +8,6 @@ const tasks = ref<Task[]>([])
 const newTask = ref('')
 const isLoading = ref(false)
 const error = ref('')
-const errorMessage = ref('')
 
 const loadTasks = async () => {
   try {
@@ -24,15 +23,20 @@ const loadTasks = async () => {
 }
 
 const addTask = async () => {
-  if (!newTask.value.trim()) return
+  const taskText = newTask.value.trim()
+  if (!taskText) return
+  if (taskText.length > 200) {
+    error.value = 'Tarefa muito longa (máximo 200 caracteres).'
+    return
+  }
   try {
-    const createdTask = await todoService.createTask(newTask.value)
+    const createdTask = await todoService.createTask(taskText)
     if (createdTask) {
       tasks.value.push(createdTask)
       newTask.value = ''
     }
   } catch (err) {
-    errorMessage.value = 'Erro ao adicionar tarefa. Tente novamente.'
+    error.value = 'Erro ao adicionar tarefa. Tente novamente.'
     console.error('Erro ao adicionar tarefa:', err)
   }
 }
@@ -65,11 +69,6 @@ onMounted(() => {
     <div v-if="error" class="error-message">
       {{ error }}
       <button class="error-close" @click="error = ''">✕</button>
-    </div>
-
-    <div v-if="errorMessage" class="error-alert">
-      {{ errorMessage }}
-      <button class="error-close" @click="errorMessage = ''">✕</button>
     </div>
 
     <div class="add-task">
