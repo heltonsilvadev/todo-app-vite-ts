@@ -55,10 +55,6 @@ const onTaskSaved = (updatedTask: Task) => {
   }
 }
 
-const reloadTasks = async () => {
-  await loadTasks()
-}
-
 onMounted(() => {
   loadTasks()
 })
