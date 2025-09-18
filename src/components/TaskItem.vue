@@ -14,12 +14,16 @@ const emit = defineEmits<{
 }>();
 
 const isEditing = ref(false);
+const isLoading = ref(false);
 const originalText = ref("");
-// this will get a reference to the dom element once the component is mounted
 const editInput = useTemplateRef("editInput");
 
 const toggleComplete = async () => {
+  if (isLoading.value) return;
+
+  const originalCompleted = props.task.completed;
   try {
+    isLoading.value = true;
     const updatedTask = await todoService.updateTask(props.task.id, {
       completed: !props.task.completed,
     });
@@ -27,6 +31,10 @@ const toggleComplete = async () => {
     emit("toggle-complete", updatedTask);
   } catch (error) {
     console.error('Erro ao atualizar tarefa:', error);
+    // Reset to original state on error
+    props.task.completed = originalCompleted;
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -50,20 +58,28 @@ const editTask = () => {
 };
 
 const saveEdit = async () => {
-  if (!isEditing.value) return;
+  if (!isEditing.value || isLoading.value) return;
 
   let newText = editInput.value?.value.trim();
-  if (newText == null) {
+  if (!newText && newText !== "") {
     newText = originalText.value;
   }
 
+  if (newText === originalText.value) {
+    isEditing.value = false;
+    return;
+  }
+
   try {
+    isLoading.value = true;
     const updatedTask = await todoService.updateTask(props.task.id, { task: newText });
     isEditing.value = false;
     Object.assign(props.task, updatedTask);
     emit("save", updatedTask);
   } catch (error) {
     console.error('Erro ao salvar tarefa:', error);
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -101,9 +117,13 @@ const cancelEdit = () => {
     </span>
 
     <div class="actions">
-      <button v-if="isEditing" @click="saveEdit">Save</button>
-      <button v-else-if="!task.completed" @click="editTask">Edit</button>
-      <button @click="deleteTask" class="delete">Delete</button>
+      <button v-if="isEditing" @click="saveEdit" :disabled="isLoading">
+        {{ isLoading ? 'Saving...' : 'Save' }}
+      </button>
+      <button v-else-if="!task.completed" @click="editTask" :disabled="isLoading">Edit</button>
+      <button @click="deleteTask" class="delete" :disabled="isLoading">
+        {{ isLoading ? 'Deleting...' : 'Delete' }}
+      </button>
     </div>
   </li>
 </template>

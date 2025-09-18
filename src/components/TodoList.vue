@@ -8,6 +8,7 @@ const tasks = ref<Task[]>([])
 const newTask = ref('')
 const isLoading = ref(false)
 const error = ref('')
+const errorMessage = ref('')
 
 const loadTasks = async () => {
   try {
@@ -30,8 +31,27 @@ const addTask = async () => {
       tasks.value.push(createdTask)
       newTask.value = ''
     }
-  } catch (error) {
-    // Silent fail for now
+  } catch (err) {
+    errorMessage.value = 'Erro ao adicionar tarefa. Tente novamente.'
+    console.error('Erro ao adicionar tarefa:', err)
+  }
+}
+
+const onTaskDeleted = (id: string) => {
+  tasks.value = tasks.value.filter(t => t.id !== id)
+}
+
+const onTaskToggled = (updatedTask: Task) => {
+  const index = tasks.value.findIndex(t => t.id === updatedTask.id)
+  if (index > -1) {
+    tasks.value.splice(index, 1, updatedTask)
+  }
+}
+
+const onTaskSaved = (updatedTask: Task) => {
+  const index = tasks.value.findIndex(t => t.id === updatedTask.id)
+  if (index > -1) {
+    tasks.value.splice(index, 1, updatedTask)
   }
 }
 
@@ -48,6 +68,12 @@ onMounted(() => {
   <div class="todo-list">
     <div v-if="error" class="error-message">
       {{ error }}
+      <button class="error-close" @click="error = ''">✕</button>
+    </div>
+
+    <div v-if="errorMessage" class="error-alert">
+      {{ errorMessage }}
+      <button class="error-close" @click="errorMessage = ''">✕</button>
     </div>
 
     <div class="add-task">
@@ -69,7 +95,9 @@ onMounted(() => {
         v-for="task in tasks"
         :key="task.id"
         :task="task"
-        @delete="reloadTasks"
+        @delete="onTaskDeleted"
+        @toggle-complete="onTaskToggled"
+        @save="onTaskSaved"
       />
     </ul>
   </div>
@@ -109,6 +137,35 @@ ul {
   border-radius: 4px;
   margin-bottom: 20px;
   border: 1px solid #fcc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-alert {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border: 1px solid #ffeaa7;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: inherit;
+  padding: 0;
+  opacity: 0.7;
+}
+
+.error-close:hover {
+  opacity: 1;
 }
 
 .loading {
