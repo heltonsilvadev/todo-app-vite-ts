@@ -1,7 +1,9 @@
 {
-  "name": "heltondev-frontend",
+  "name": "todo-app-vite-ts",
   "compatibility_date": "2025-09-17",
+  "main": "_worker.js",
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    "binding": "ASSETS"
   }
 }
