@@ -1,6 +1,5 @@
 <template>
   <div class="main-page">
-    <h1>Todo App</h1>
     <TodoList />
   </div>
 </template>

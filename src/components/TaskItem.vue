@@ -8,7 +8,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "delete", id: number): void;
+  (e: "delete", id: string): void;
   (e: "toggle-complete", task: Task): void;
   (e: "save", task: Task): void;
 }>();

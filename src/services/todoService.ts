@@ -47,7 +47,7 @@ export const todoService = {
     return data.data
   },
 
-  async updateTask(id: number, updates: Partial<Task>): Promise<Task> {
+  async updateTask(id: string, updates: Partial<Task>): Promise<Task> {
     const response = await fetch(`${API_BASE}/todos/${id}`, {
       method: 'PUT',
       headers: {
@@ -61,7 +61,7 @@ export const todoService = {
     return data.data
   },
 
-  async deleteTask(id: number): Promise<void> {
+  async deleteTask(id: string): Promise<void> {
     const response = await fetch(`${API_BASE}/todos/${id}`, {
       method: 'DELETE',
       headers: {
